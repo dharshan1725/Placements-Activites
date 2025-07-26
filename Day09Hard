@@ -1,0 +1,89 @@
+import java.util.*;
+
+// Definition for singly-linked list.
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode() {}
+    ListNode(int val) { this.val = val; }
+    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+}
+
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) { 
+        
+        //Type Your Code Herew9-hard
+
+        if (head == null) return null;
+
+        ListNode tail = head;
+        for (int i = 0; i < k; i++) {
+            if (tail == null) return head;
+            tail = tail.next;
+        }
+
+        ListNode newHead = reverse(head, tail);
+        head.next = reverseKGroup(tail, k);
+        return newHead;
+    }
+
+    private ListNode reverse(ListNode cur, ListNode end) {
+        ListNode prev = null;
+        while (cur != end) {
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        return prev;
+    }
+
+        
+    
+
+    
+
+    public List<Integer> toList(ListNode head) {
+        List<Integer> result = new ArrayList<>();
+        while (head != null) {
+            result.add(head.val);
+            head = head.next;
+        }
+        return result;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Solution solution = new Solution();
+
+        //System.out.println("Enter list (e.g., [1,2,3,4,5]):");
+        String input = scanner.nextLine().trim();
+        input = input.replaceAll("[\\[\\]\\s]", "");
+        String[] parts = input.split(",");
+
+        //System.out.print("Enter k: ");
+        int k = scanner.nextInt();
+
+        // Build linked list
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+        for (String part : parts) {
+            if (!part.isEmpty()) {
+                current.next = new ListNode(Integer.parseInt(part));
+                current = current.next;
+            }
+        }
+
+        ListNode head = dummy.next;
+        ListNode newHead = solution.reverseKGroup(head, k);
+
+        // Print output as list
+        List<Integer> result = solution.toList(newHead);
+        //System.out.println("Output:");
+        System.out.println(result);
+
+        scanner.close();
+    }
+}

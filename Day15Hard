@@ -1,0 +1,71 @@
+
+import java.util.*;
+
+public class Solution {
+    int max = Integer.MAX_VALUE;
+
+    class Pair {
+        int node, parent;
+        Pair(int node, int parent) {
+            this.node = node;
+            this.parent = parent;
+        }
+    }
+    public int findShortestCycle(int n, int[][] edges) {
+        
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+            graph.get(edge[1]).add(edge[0]);
+        }
+        for (int i = 0; i < n; i++) {
+            BFS(graph, i, n);
+        }
+        return (max == Integer.MAX_VALUE) ? -1 : max;
+    }
+    public void BFS(List<List<Integer>> graph, int start, int n) {
+        int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(start, -1));
+        dist[start] = 0;
+
+        while (!q.isEmpty()) {
+            Pair p = q.poll();
+            int node = p.node, parent = p.parent;
+
+            for (int nbr : graph.get(node)) {
+                if (nbr == parent) continue;
+
+                if (dist[nbr] == -1) {
+                    dist[nbr] = dist[node] + 1;
+                    q.add(new Pair(nbr, node));
+                } else {
+                    max = Math.min(max, dist[node] + dist[nbr] + 1);
+                }
+            }
+        }
+    }
+
+    // Main method to read input and print output
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Solution sol = new Solution();
+
+        int n = sc.nextInt(); // number of nodes
+        int m = sc.nextInt(); // number of edges
+
+        int[][] edges = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            edges[i][0] = sc.nextInt();
+            edges[i][1] = sc.nextInt();
+        }
+
+        int ans = sol.findShortestCycle(n, edges);
+        System.out.println(ans);
+    }
+}

@@ -1,0 +1,47 @@
+
+
+import java.util.*;
+
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        if (intervals.length == 0) return 0;
+
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
+
+        int count = 0;
+        int end = intervals[0][1]; 
+
+        for (int i = 1; i < intervals.length; i++) {
+            
+            if (intervals[i][0] < end) {
+                count++; 
+            } else {
+                end = intervals[i][1]; 
+            }
+        }
+
+        return count;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String inputLine = scanner.nextLine().trim();
+
+        // Remove the outer brackets and split into individual intervals
+        inputLine = inputLine.replaceAll("\\[\\[", "").replaceAll("]]", "");
+        String[] intervalStrings = inputLine.split("\\],\\[");
+
+        int[][] intervals = new int[intervalStrings.length][2];
+        for (int i = 0; i < intervalStrings.length; i++) {
+            String[] parts = intervalStrings[i].split(",");
+            intervals[i][0] = Integer.parseInt(parts[0].trim());
+            intervals[i][1] = Integer.parseInt(parts[1].trim());
+        }
+
+        Solution solution = new Solution();
+        int result = solution.eraseOverlapIntervals(intervals);
+        System.out.println(result);
+    }
+}

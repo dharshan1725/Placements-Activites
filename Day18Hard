@@ -1,0 +1,58 @@
+
+
+import java.util.*;
+
+public class Solution {
+
+    public int minCost(int n, int[] cuts) {
+        int c = cuts.length;
+        int[] allCuts = new int[c + 2];
+        allCuts[0] = 0;
+        allCuts[c + 1] = n;
+        Arrays.sort(cuts);
+        for (int i = 0; i < c; i++) {
+            allCuts[i + 1] = cuts[i];
+        }
+
+        int[][] dp = new int[c + 2][c + 2];
+
+        for (int len = 2; len <= c + 1; len++) {
+            for (int i = 0; i + len <= c + 1; i++) {
+                int j = i + len;
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int k = i + 1; k < j; k++) {
+                    int cost = allCuts[j] - allCuts[i] + dp[i][k] + dp[k][j];
+                    dp[i][j] = Math.min(dp[i][j], cost);
+                }
+            }
+        }
+
+        return dp[0][c + 1];
+    }
+
+
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        try {
+            // First line: read stick length
+            int n = Integer.parseInt(scanner.nextLine().trim());
+
+            // Second line: read space-separated cuts
+            String[] parts = scanner.nextLine().trim().split("\\s+");
+            int[] cuts = new int[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                cuts[i] = Integer.parseInt(parts[i]);
+            }
+
+            Solution sol = new Solution();
+            int result = sol.minCost(n, cuts);
+            System.out.println(result);
+
+        } catch (Exception e) {
+            System.out.println("Invalid input format.");
+        } finally {
+            scanner.close();
+        }
+    }
+}
